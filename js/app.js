@@ -49,20 +49,33 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
   switch(key) {
     case 'left':
-      this.x -= CELL_W;
+      if(this.x === 0) {
+        // At leftmost cell, cannot move left; do nothing.
+      } else {
+        this.x -= CELL_W;
+      }
       break;
     case 'up':
-      this.y -= CELL_H;
+      if(this.y === -30) {
+        // At top cell, cannot move up; do nothing.
+      } else {
+        this.y -= CELL_H;
+      }
       break;
     case 'right':
-      this.x += CELL_W;
+      if(this.x === 404) {
+        // At rightmost cell, cannot move right; do nothing.
+      } else {
+        this.x += CELL_W;
+      }
       break;
     case 'down':
-      this.y += CELL_H;
+      if(this.y === 385) {
+        // At bottom cell, cannot move down; do nothing.
+      } else {
+        this.y += CELL_H;
+      }
       break;
-    default:
-      // Should never happen
-      console.log(key);
   }
 };
 
