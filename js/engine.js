@@ -42,7 +42,9 @@ var Engine = (function(global) {
     var now = Date.now(),
       dt = (now - lastTime) / 1000.0;
 
-
+    if(player.hasWon()) {
+      reset();
+    }
 
     /* Call our update/render functions, pass along the time delta to
      * our update function since it may be used for smooth animation.
@@ -161,7 +163,7 @@ var Engine = (function(global) {
    * those sorts of things. It's only called once by the init() method.
    */
   function reset() {
-    // noop
+    player.setCanvasCoordinate(2, 5);
   }
 
   /* Go ahead and load all of the images we know we're going to need to

@@ -84,6 +84,10 @@ Player.prototype.setCanvasCoordinate = function(cellX, cellY) {
   this.y = (cellY*CELL_H) + H_OFFSET;
 };
 
+Player.prototype.hasWon = function() {
+  return (this.y === -30) ? true : false;
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
