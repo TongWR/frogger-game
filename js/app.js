@@ -30,7 +30,7 @@ var H_OFFSET = -30; // Determined by trial and error
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-  this.sprite = 'images/char-boy.png';
+  this.sprite = 'images/char-horn-girl.png';
   this.setCanvasCoordinate(2, 5);
 };
 
