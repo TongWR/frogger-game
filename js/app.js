@@ -21,12 +21,21 @@ Enemy.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+/* Declare variables used across Player's methods */
+var CELL_W = 101; // This value equals to image width
+var CELL_H = 83; // This is trickier; there's vertical overlap. The value 83 comes from render() in Engine
+var H_OFFSET = -30; // Determined by trial and error
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
   this.sprite = 'images/char-boy.png';
   this.setCanvasCoordinate(2, 5);
+};
+
+Player.prototype = function() {
+
 };
 
 Player.prototype.update = function() {
@@ -40,16 +49,16 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
   switch(key) {
     case 'left':
-      this.x -= 101;
+      this.x -= CELL_W;
       break;
     case 'up':
-      this.y -= 83;
+      this.y -= CELL_H;
       break;
     case 'right':
-      this.x += 101;
+      this.x += CELL_W;
       break;
     case 'down':
-      this.y += 83;
+      this.y += CELL_H;
       break;
     default:
       // Should never happen
@@ -58,10 +67,6 @@ Player.prototype.handleInput = function(key) {
 };
 
 Player.prototype.setCanvasCoordinate = function(cellX, cellY) {
-  var CELL_W = 101; // This value equals to image width
-  var CELL_H = 83; // This is trickier; there's vertical overlap. The value 83 comes from render() in Engine
-  var H_OFFSET = -30; // Determined by trial and error
-
   this.x = cellX * CELL_W;
   this.y = (cellY*CELL_H) + H_OFFSET;
 };
