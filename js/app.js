@@ -25,7 +25,8 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-
+  this.sprite = 'images/char-boy.png';
+  this.setCanvasCoordinate(2, 5);
 };
 
 Player.prototype.update = function() {
@@ -33,11 +34,20 @@ Player.prototype.update = function() {
 };
 
 Player.prototype.render = function() {
-
+  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 Player.prototype.handleInput = function() {
 
+};
+
+Player.prototype.setCanvasCoordinate = function(cellX, cellY) {
+  var CELL_W = 101; // This value equals to image width
+  var CELL_H = 83; // This is trickier; there's vertical overlap. The value 83 comes from render() in Engine
+  var H_OFFSET = -30; // Determined by trial and error
+
+  this.x = cellX * CELL_W;
+  this.y = (cellY*CELL_H) + H_OFFSET;
 };
 
 // Now instantiate your objects.
