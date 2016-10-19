@@ -23,7 +23,8 @@ var Engine = (function(global) {
     win = global.window,
     canvas = doc.createElement('canvas'),
     ctx = canvas.getContext('2d'),
-    lastTime;
+    lastTime,
+    winCount = 0;
 
   canvas.width = 505;
   canvas.height = 606;
@@ -43,6 +44,8 @@ var Engine = (function(global) {
       dt = (now - lastTime) / 1000.0;
 
     if(player.hasWon()) {
+      winCount++;
+      document.getElementById("win-count").value = winCount;
       reset();
     }
 
@@ -69,6 +72,7 @@ var Engine = (function(global) {
    */
   function init() {
     reset();
+    document.getElementById("win-count").value = winCount;
     lastTime = Date.now();
     main();
   }

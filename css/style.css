@@ -1,3 +1,8 @@
 body {
   text-align: center;
 }
+
+#win-count {
+  text-align: center;
+  width: 50px;
+}
