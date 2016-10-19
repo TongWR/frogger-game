@@ -7,6 +7,7 @@ var TOP_CELL = 0,
     BOTTOM_CELL = 5,
     LEFTMOST_CELL = 0;
 var SAFE_DISTANCE = 70;
+var baseSpeed = 100;
 
 // Enemies our player must avoid
 var Enemy = function(cellY, speed) {
@@ -56,8 +57,7 @@ Enemy.prototype.getRandomBirthRow = function() {
   return Math.ceil(3*Math.random());
 };
 
-Enemy.prototype.setRandomSpeed = function(baseSpeed) {
-  var baseSpeed = baseSpeed || 100;
+Enemy.prototype.setRandomSpeed = function() {
   this.speed = Math.ceil(5*Math.random()) * baseSpeed;
 };
 
@@ -134,8 +134,8 @@ Player.prototype.hasWon = function() {
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 var numEnemies = 5;
-for(var i = 0; i < 5; i++) {
-  allEnemies[i] = new Enemy(Math.ceil(3*Math.random()), 100*Math.ceil(5*Math.random()));
+for(var i = 0; i < 3; i++) {
+  allEnemies[i] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()));
 }
 // Place the player object in a variable called player
 var player = new Player();

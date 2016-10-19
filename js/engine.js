@@ -70,7 +70,7 @@ var Engine = (function(global) {
    */
   function init() {
     reset();
-    document.getElementById("win-count").value = winCount;
+    document.getElementById("win-count").innerHTML = winCount;
     lastTime = Date.now();
     main();
   }
@@ -180,11 +180,14 @@ var Engine = (function(global) {
   function reset(hasWon) {
     if(hasWon) {
       winCount++;
-
+      baseSpeed += 10;
+      allEnemies[allEnemies.length] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()))
     } else {
       winCount = 0;
+      baseSpeed = 100;
+      allEnemies = allEnemies.slice(0, 3);
     }
-    document.getElementById("win-count").value = winCount;
+    document.getElementById("win-count").innerHTML = winCount;
     player.setLocation();
   }
 
