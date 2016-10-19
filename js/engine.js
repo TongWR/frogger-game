@@ -43,6 +43,7 @@ var Engine = (function(global) {
     var now = Date.now(),
       dt = (now - lastTime) / 1000.0;
 
+    /* If player's' won, increase level and difficulty */
     if(player.hasWon()) {
       reset(1);
     }
@@ -70,7 +71,7 @@ var Engine = (function(global) {
    */
   function init() {
     reset();
-    document.getElementById("level").innerHTML = level;
+    document.getElementById('level').innerHTML = level;
     lastTime = Date.now();
     main();
   }
@@ -87,8 +88,8 @@ var Engine = (function(global) {
   function update(dt) {
     updateEntities(dt);
     if(checkCollisions()) {
-      alert("Nooo");
-      reset(0);
+      alert('Game Over! Baby, don\'t cry.');
+      reset(0); // If collided, reset level and difficulty
     }
   }
 
@@ -110,7 +111,7 @@ var Engine = (function(global) {
     var enemy;
     for(var i = 0; i < allEnemies.length; i++) {
       enemy = allEnemies[i];
-      if(enemy.hasCollidedWith(player)) {
+      if(enemy.hasCollidedWith(player)) { // If any enemy's collided with player, return true
         return true;
       }
     }
@@ -173,14 +174,24 @@ var Engine = (function(global) {
     player.render();
   }
 
+  /* Increase difficuly by either adding a bug or incrementing base speed */
   function increaseDifficulty() {
-    baseSpeed += 10;
-    allEnemies[allEnemies.length] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()));
+    if(level%5 === 0) {
+      baseSpeed -= 40;
+      allEnemies[allEnemies.length] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()));
+    } else {
+      baseSpeed += 20;
+    }
+    document.getElementById('bugs').innerHTML = allEnemies.length;
+    document.getElementById('speed').innerHTML = (baseSpeed-100)/20 +1;
   }
 
+  /* Back to initial number of bugs and base speed */
   function resetDifficulty() {
     baseSpeed = 100;
     allEnemies = allEnemies.slice(0, 3);
+    document.getElementById('bugs').innerHTML = allEnemies.length;
+    document.getElementById('speed').innerHTML = (baseSpeed-100)/20 +1;
   }
 
   /* This function does nothing but it could have been a good place to
@@ -195,7 +206,7 @@ var Engine = (function(global) {
       level = 0;
       resetDifficulty();
     }
-    document.getElementById("level").innerHTML = level;
+    document.getElementById('level').innerHTML = level;
     player.setLocation();
   }
 

@@ -12,8 +12,7 @@ var baseSpeed = 100;
 // Enemies our player must avoid
 var Enemy = function(cellY, speed) {
   this.sprite = 'images/enemy-bug.png';
-
-  // Default initial location + speed provided if not supplied
+  /* Default initial location + speed provided if not supplied */
   this.setLocation(cellY);
   this.speed = speed || 100;
 };
@@ -21,70 +20,76 @@ var Enemy = function(cellY, speed) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-  // You should multiply any movement by the dt parameter
-  // which will ensure the game runs at the same speed for
-  // all computers.
   if(this.isOffScreen()) {
-    this.reincarnate();
+    this.reincarnate(); // If enemy's fallen off game world, it's reincarnated
   } else {
-    this.canvasX += this.speed * dt;
+    this.canvasX += this.speed * dt; // Else, enemy moves horizontally according to speed and time passed
   }
 };
 
+/* Return canvasY coordinate of where player should be rendered
+ * Mathematically most complicated location function
+ * Has to deal with both cell-based and canvas locations
+ */
 Enemy.prototype.getCanvasX = function() {
-  if(this.cellX === LEFTMOST_CELL-1) {
+  if(this.cellX === LEFTMOST_CELL-1) { // This only happens right after reincarnation
     this.canvasX = -CELL_W;
     this.cellX = 9999;
   }
   return this.canvasX;
 };
 
+/* Return canvasY coordinate of where enemy should be rendered */
 Enemy.prototype.getCanvasY = function() {
   return H_OFFSET + (this.cellY*CELL_H);
 };
 
+/* Set initial location according to given row; horizontally placed one invisble cell to the left */
 Enemy.prototype.setLocation = function(cellY) {
   this.cellX = -1;
   this.cellY = cellY || 2;
 };
 
+/* Reincarnate at random row and speed calculated based on base speed */
 Enemy.prototype.reincarnate = function() {
   this.setLocation(this.getRandomBirthRow());
   this.setRandomSpeed();
 };
 
+/* Return a random birth row from three rows available */
 Enemy.prototype.getRandomBirthRow = function() {
   return Math.ceil(3*Math.random());
 };
 
+/* Set speed randomly by multiplying base speed a number randomly picked from 1 to 5 */
 Enemy.prototype.setRandomSpeed = function() {
   this.speed = Math.ceil(5*Math.random()) * baseSpeed;
 };
 
+/* Check if enemy has gone off screen by looking at its canvasX */
 Enemy.prototype.isOffScreen = function() {
   return (this.getCanvasX() > (RIGHTMOST_CELL+1) * CELL_W) ? true : false;
 };
 
+/* Check if enemy has collided with player */
 Enemy.prototype.hasCollidedWith = function(player) {
   return ((this.cellY === player.cellY) && (Math.abs(player.getCanvasX()-this.getCanvasX()) < SAFE_DISTANCE)) ? true : false;
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen
 Enemy.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
 var Player = function(cellX, cellY) {
   this.setLocation();
   this.sprite = 'images/char-horn-girl.png';
 };
 
+/* Move player when the move doesn't make player falls off the face of the earth */
 Player.prototype.update = function(moveX, moveY) {
-  var moveX = moveX || 0;
-  var moveY = moveY || 0;
+  moveX = moveX || 0;
+  moveY = moveY || 0;
   if(moveX === -1 && this.cellX > LEFTMOST_CELL) this.cellX--;
   if(moveX === 1 && this.cellX < RIGHTMOST_CELL) this.cellX++;
   if(moveY === -1 && this.cellY > TOP_CELL) this.cellY--;
@@ -112,36 +117,35 @@ Player.prototype.handleInput = function(key) {
   }
 };
 
+/* Return canvasX coordinate of where player should be rendered */
 Player.prototype.getCanvasX = function() {
   return this.cellX * CELL_W;
 };
 
+/* Return canvasY coordinate of where player should be rendered */
 Player.prototype.getCanvasY = function() {
   return H_OFFSET + (this.cellY*CELL_H);
 };
 
-// Default to initial location
+/* Set location using cell-based location, not Canvas coordinate */
 Player.prototype.setLocation = function(cellX, cellY) {
   this.cellX = cellX || 2;
   this.cellY = cellY || 5;
 };
 
+/* Check if player's won by looking if it's in any cell in the top row */
 Player.prototype.hasWon = function() {
   return (this.cellY === TOP_CELL) ? true : false;
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
+/* Instantiate player and enemies */
 var allEnemies = [];
-var numEnemies = 5;
-for(var i = 0; i < 3; i++) {
+var initialNumEnemies = 3;
+for(var i = 0; i < initialNumEnemies; i++) {
   allEnemies[i] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()));
 }
-// Place the player object in a variable called player
 var player = new Player();
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
   var allowedKeys = {
     37: 'left',
