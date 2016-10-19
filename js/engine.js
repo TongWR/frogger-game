@@ -24,7 +24,7 @@ var Engine = (function(global) {
     canvas = doc.createElement('canvas'),
     ctx = canvas.getContext('2d'),
     lastTime,
-    winCount = 0;
+    level = 0;
 
   canvas.width = 505;
   canvas.height = 606;
@@ -70,7 +70,7 @@ var Engine = (function(global) {
    */
   function init() {
     reset();
-    document.getElementById("win-count").innerHTML = winCount;
+    document.getElementById("level").innerHTML = level;
     lastTime = Date.now();
     main();
   }
@@ -173,21 +173,29 @@ var Engine = (function(global) {
     player.render();
   }
 
+  function increaseDifficulty() {
+    baseSpeed += 10;
+    allEnemies[allEnemies.length] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()));
+  }
+
+  function resetDifficulty() {
+    baseSpeed = 100;
+    allEnemies = allEnemies.slice(0, 3);
+  }
+
   /* This function does nothing but it could have been a good place to
    * handle game reset states - maybe a new game menu or a game over screen
    * those sorts of things. It's only called once by the init() method.
    */
   function reset(hasWon) {
     if(hasWon) {
-      winCount++;
-      baseSpeed += 10;
-      allEnemies[allEnemies.length] = new Enemy(Math.ceil(3*Math.random()), baseSpeed*Math.ceil(5*Math.random()))
+      level++;
+      increaseDifficulty();
     } else {
-      winCount = 0;
-      baseSpeed = 100;
-      allEnemies = allEnemies.slice(0, 3);
+      level = 0;
+      resetDifficulty();
     }
-    document.getElementById("win-count").innerHTML = winCount;
+    document.getElementById("level").innerHTML = level;
     player.setLocation();
   }
 
