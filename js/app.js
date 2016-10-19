@@ -14,8 +14,15 @@ Enemy.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers.
-  console.log(this.x);
-  this.x += this.speed * dt;
+  if(this.isOffScreen()) {
+    this.x = -101;
+  } else {
+    this.x += this.speed * dt;
+  }
+};
+
+Enemy.prototype.isOffScreen = function() {
+  return (this.x > 505) ? true : false;
 };
 
 // Draw the enemy on the screen, required method for game
