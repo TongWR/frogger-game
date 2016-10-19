@@ -44,9 +44,7 @@ var Engine = (function(global) {
       dt = (now - lastTime) / 1000.0;
 
     if(player.hasWon()) {
-      winCount++;
-      document.getElementById("win-count").value = winCount;
-      reset();
+      reset(1);
     }
 
     /* Call our update/render functions, pass along the time delta to
@@ -88,7 +86,10 @@ var Engine = (function(global) {
    */
   function update(dt) {
     updateEntities(dt);
-    // checkCollisions();
+    if(checkCollisions()) {
+      alert("Nooo");
+      reset(0);
+    }
   }
 
   /* This is called by the update function and loops through all of the
@@ -103,6 +104,16 @@ var Engine = (function(global) {
       enemy.update(dt);
     });
     player.update();
+  }
+
+  function checkCollisions() {
+    var enemy;
+    for(var i = 0; i < allEnemies.length; i++) {
+      enemy = allEnemies[i];
+      if(enemy.hasCollidedWith(player)) {
+        return true;
+      }
+    }
   }
 
   /* This function initially draws the "game level", it will then call
@@ -166,7 +177,14 @@ var Engine = (function(global) {
    * handle game reset states - maybe a new game menu or a game over screen
    * those sorts of things. It's only called once by the init() method.
    */
-  function reset() {
+  function reset(hasWon) {
+    if(hasWon) {
+      winCount++;
+
+    } else {
+      winCount = 0;
+    }
+    document.getElementById("win-count").value = winCount;
     player.setLocation();
   }
 

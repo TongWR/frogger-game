@@ -6,6 +6,7 @@ var TOP_CELL = 0,
     RIGHTMOST_CELL = 4,
     BOTTOM_CELL = 5,
     LEFTMOST_CELL = 0;
+var SAFE_DISTANCE = 75;
 
 // Enemies our player must avoid
 var Enemy = function(cellY, speed) {
@@ -48,6 +49,10 @@ Enemy.prototype.setLocation = function(cellY) {
 
 Enemy.prototype.isOffScreen = function() {
   return (this.getCanvasX() > (RIGHTMOST_CELL+1) * CELL_W) ? true : false;
+};
+
+Enemy.prototype.hasCollidedWith = function(player) {
+  return ((this.cellY === player.cellY) && (Math.abs(player.getCanvasX()-this.getCanvasX()) < SAFE_DISTANCE)) ? true : false;
 };
 
 // Draw the enemy on the screen, required method for game
