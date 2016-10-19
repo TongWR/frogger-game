@@ -8,12 +8,11 @@ var TOP_CELL = 0,
     LEFTMOST_CELL = 0;
 
 // Enemies our player must avoid
-var Enemy = function(initialX, initialY, speed) {
+var Enemy = function(cellY, speed) {
   this.sprite = 'images/enemy-bug.png';
 
   // Default initial location + speed provided if not supplied
-  this.x = initialX || -CELL_W;
-  this.y = initialY || (2*CELL_H + H_OFFSET);
+  this.setLocation(cellY);
   this.speed = speed || 100;
 };
 
@@ -24,19 +23,36 @@ Enemy.prototype.update = function(dt) {
   // which will ensure the game runs at the same speed for
   // all computers.
   if(this.isOffScreen()) {
-    this.x = -CELL_W;
+    this.setLocation(this.cellY);
   } else {
-    this.x += this.speed * dt;
+    this.canvasX += this.speed * dt;
   }
 };
 
+Enemy.prototype.getCanvasX = function() {
+  if(this.cellX === LEFTMOST_CELL-1) {
+    this.canvasX = -CELL_W;
+    this.cellX = 9999;
+  }
+  return this.canvasX;
+};
+
+Enemy.prototype.getCanvasY = function() {
+  return H_OFFSET + (this.cellY*CELL_H);
+};
+
+Enemy.prototype.setLocation = function(cellY) {
+  this.cellX = -1;
+  this.cellY = cellY || 2;
+};
+
 Enemy.prototype.isOffScreen = function() {
-  return (this.x > 5*CELL_W) ? true : false;
+  return (this.getCanvasX() > (RIGHTMOST_CELL+1) * CELL_W) ? true : false;
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
 };
 
 // Now write your own player class
@@ -99,7 +115,7 @@ Player.prototype.hasWon = function() {
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 allEnemies[0] = new Enemy();
-allEnemies[1] = new Enemy(-CELL_W, CELL_H + H_OFFSET, 500);
+allEnemies[1] = new Enemy(1, 500);
 // Place the player object in a variable called player
 var player = new Player();
 
