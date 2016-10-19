@@ -6,7 +6,7 @@ var TOP_CELL = 0,
     RIGHTMOST_CELL = 4,
     BOTTOM_CELL = 5,
     LEFTMOST_CELL = 0;
-var SAFE_DISTANCE = 75;
+var SAFE_DISTANCE = 70;
 
 // Enemies our player must avoid
 var Enemy = function(cellY, speed) {
@@ -24,7 +24,7 @@ Enemy.prototype.update = function(dt) {
   // which will ensure the game runs at the same speed for
   // all computers.
   if(this.isOffScreen()) {
-    this.setLocation(this.cellY);
+    this.reincarnate();
   } else {
     this.canvasX += this.speed * dt;
   }
@@ -45,6 +45,20 @@ Enemy.prototype.getCanvasY = function() {
 Enemy.prototype.setLocation = function(cellY) {
   this.cellX = -1;
   this.cellY = cellY || 2;
+};
+
+Enemy.prototype.reincarnate = function() {
+  this.setLocation(this.getRandomBirthRow());
+  this.setRandomSpeed();
+};
+
+Enemy.prototype.getRandomBirthRow = function() {
+  return Math.ceil(3*Math.random());
+};
+
+Enemy.prototype.setRandomSpeed = function(baseSpeed) {
+  var baseSpeed = baseSpeed || 100;
+  this.speed = Math.ceil(5*Math.random()) * baseSpeed;
 };
 
 Enemy.prototype.isOffScreen = function() {
@@ -119,8 +133,10 @@ Player.prototype.hasWon = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
-allEnemies[0] = new Enemy();
-allEnemies[1] = new Enemy(1, 500);
+var numEnemies = 5;
+for(var i = 0; i < 5; i++) {
+  allEnemies[i] = new Enemy(Math.ceil(3*Math.random()), 100*Math.ceil(5*Math.random()));
+}
 // Place the player object in a variable called player
 var player = new Player();
 
