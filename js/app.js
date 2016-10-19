@@ -1,7 +1,11 @@
 /* Declare variables used across Player and Enemy's methods */
-var CELL_W = 101; // This value equals to image width
-var CELL_H = 83; // This is trickier; there's vertical overlap. The value 83 comes from render() in Engine
-var H_OFFSET = -30; // Determined by trial and error
+var CELL_W = 101, // This value equals to image width
+    CELL_H = 83, // This is trickier; there's vertical overlap. The value 83 comes from render() in Engine
+    H_OFFSET = -30; // Determined by trial and error
+var TOP_CELL = 0,
+    RIGHTMOST_CELL = 4,
+    BOTTOM_CELL = 5,
+    LEFTMOST_CELL = 0;
 
 // Enemies our player must avoid
 var Enemy = function(initialX, initialY, speed) {
@@ -38,59 +42,57 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function() {
+var Player = function(cellX, cellY) {
+  this.setLocation();
   this.sprite = 'images/char-horn-girl.png';
-  this.setCanvasCoordinate(2, 5);
 };
 
-Player.prototype.update = function() {
-
+Player.prototype.update = function(moveX, moveY) {
+  var moveX = moveX || 0;
+  var moveY = moveY || 0;
+  if(moveX === -1 && this.cellX > LEFTMOST_CELL) this.cellX--;
+  if(moveX === 1 && this.cellX < RIGHTMOST_CELL) this.cellX++;
+  if(moveY === -1 && this.cellY > TOP_CELL) this.cellY--;
+  if(moveY === 1 && this.cellY < BOTTOM_CELL) this.cellY++;
 };
 
 Player.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
 };
 
 Player.prototype.handleInput = function(key) {
   switch(key) {
     case 'left':
-      if(this.x === 0) {
-        // At leftmost cell, cannot move left; do nothing.
-      } else {
-        this.x -= CELL_W;
-      }
+      this.update(-1, 0);
       break;
     case 'up':
-      if(this.y === H_OFFSET) {
-        // At top cell, cannot move up; do nothing.
-      } else {
-        this.y -= CELL_H;
-      }
+      this.update(0, -1);
       break;
     case 'right':
-      if(this.x === 4*CELL_W) {
-        // At rightmost cell, cannot move right; do nothing.
-      } else {
-        this.x += CELL_W;
-      }
+      this.update(1, 0);
       break;
     case 'down':
-      if(this.y === 5*CELL_H + H_OFFSET) {
-        // At bottom cell, cannot move down; do nothing.
-      } else {
-        this.y += CELL_H;
-      }
+      this.update(0, 1);
       break;
   }
 };
 
-Player.prototype.setCanvasCoordinate = function(cellX, cellY) {
-  this.x = cellX * CELL_W;
-  this.y = (cellY*CELL_H) + H_OFFSET;
+Player.prototype.getCanvasX = function() {
+  return this.cellX * CELL_W;
+};
+
+Player.prototype.getCanvasY = function() {
+  return H_OFFSET + (this.cellY*CELL_H);
+};
+
+// Default to initial location
+Player.prototype.setLocation = function(cellX, cellY) {
+  this.cellX = cellX || 2;
+  this.cellY = cellY || 5;
 };
 
 Player.prototype.hasWon = function() {
-  return (this.y === -H_OFFSET) ? true : false;
+  return (this.cellY === TOP_CELL) ? true : false;
 };
 
 // Now instantiate your objects.
